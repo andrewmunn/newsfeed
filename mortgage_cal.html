@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30-Year vs 50-Year Mortgage Comparison</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .input-section {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #444;
+        }
+        
+        .input-help {
+            font-size: 0.85em;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        
+        input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 20px;
+        }
+        
+        button:hover {
+            background: #2980b9;
+        }
+        
+        .results {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .result-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .result-card h2 {
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 3px solid;
+        }
+        
+        .result-card.thirty h2 {
+            border-color: #e74c3c;
+            color: #c0392b;
+        }
+        
+        .result-card.fifty h2 {
+            border-color: #27ae60;
+            color: #229954;
+        }
+        
+        .metric {
+            margin: 15px 0;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .metric-value {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .comparison-box {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .winner {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .winner.thirty {
+            color: #c0392b;
+        }
+        
+        .winner.fifty {
+            color: #229954;
+        }
+        
+        .difference {
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .breakdown {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        
+        .breakdown h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .breakdown-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .results {
+                grid-template-columns: 1fr;
+            }
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>30-Year vs 50-Year Mortgage Comparison</h1>
+    <p class="subtitle">Compare net worth after 50 years, accounting for investment of payment differences</p>
+    
+    <div class="input-section">
+        <div class="input-grid">
+            <div class="input-group">
+                <label for="principal">Loan Principal ($)</label>
+                <div class="input-help">The amount you're borrowing</div>
+                <input type="number" id="principal" value="400000" min="10000" step="10000">
+            </div>
+            
+            <div class="input-group">
+                <label for="rate30">30-Year Mortgage Rate (%)</label>
+                <div class="input-help">Annual interest rate for 30-year loan</div>
+                <input type="number" id="rate30" value="6.5" min="0.1" max="20" step="0.125">
+            </div>
+            
+            <div class="input-group">
+                <label for="rate50">50-Year Mortgage Rate (%)</label>
+                <div class="input-help">Annual interest rate for 50-year loan</div>
+                <input type="number" id="rate50" value="7.0" min="0.1" max="20" step="0.125">
+            </div>
+            
+            <div class="input-group">
+                <label for="marketReturn">Stock Market Return (%)</label>
+                <div class="input-help">Expected annual return (historically ~10% nominal, ~7% real)</div>
+                <input type="number" id="marketReturn" value="8" min="0" max="30" step="0.5">
+            </div>
+        </div>
+        
+        <button onclick="calculate()">Calculate Comparison</button>
+    </div>
+    
+    <div id="resultsSection" class="hidden">
+        <div class="results">
+            <div class="result-card thirty">
+                <h2>30-Year Mortgage</h2>
+                <div class="metric">
+                    <div class="metric-label">Monthly Payment</div>
+                    <div class="metric-value" id="payment30"></div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Total Interest Paid</div>
+                    <div class="metric-value" id="interest30"></div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Investment Portfolio (Year 50)</div>
+                    <div class="metric-value" id="portfolio30"></div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Net Worth at Year 50</div>
+                    <div class="metric-value" id="networth30"></div>
+                </div>
+            </div>
+            
+            <div class="result-card fifty">
+                <h2>50-Year Mortgage</h2>
+                <div class="metric">
+                    <div class="metric-label">Monthly Payment</div>
+                    <div class="metric-value" id="payment50"></div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Total Interest Paid</div>
+                    <div class="metric-value" id="interest50"></div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Investment Portfolio (Year 50)</div>
+                    <div class="metric-value" id="portfolio50"></div>
+                </div>
+                <div class="metric">
+                    <div class="metric-label">Net Worth at Year 50</div>
+                    <div class="metric-value" id="networth50"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="comparison-box">
+            <h2>The Winner</h2>
+            <div class="winner" id="winner"></div>
+            <div class="difference" id="difference"></div>
+        </div>
+        
+        <div class="breakdown">
+            <h3>Investment Strategy Breakdown</h3>
+            <div class="breakdown-grid">
+                <div class="breakdown-item">
+                    <div class="metric-label">30-Year Strategy</div>
+                    <div id="strategy30"></div>
+                </div>
+                <div class="breakdown-item">
+                    <div class="metric-label">50-Year Strategy</div>
+                    <div id="strategy50"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="breakdown">
+            <h3>Key Insight</h3>
+            <div id="insight"></div>
+        </div>
+    </div>
+    
+    <script>
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+        
+        function calculateMonthlyPayment(principal, annualRate, years) {
+            const monthlyRate = annualRate / 100 / 12;
+            const numPayments = years * 12;
+            
+            if (monthlyRate === 0) {
+                return principal / numPayments;
+            }
+            
+            return principal * (monthlyRate * Math.pow(1 + monthlyRate, numPayments)) / 
+                   (Math.pow(1 + monthlyRate, numPayments) - 1);
+        }
+        
+        function calculateTotalInterest(monthlyPayment, years, principal) {
+            return (monthlyPayment * years * 12) - principal;
+        }
+        
+        function calculateInvestmentGrowth(monthlyContribution, months, monthlyReturn) {
+            // Future value of a series of monthly contributions
+            if (monthlyReturn === 0) {
+                return monthlyContribution * months;
+            }
+            
+            return monthlyContribution * ((Math.pow(1 + monthlyReturn, months) - 1) / monthlyReturn);
+        }
+        
+        function calculate() {
+            const principal = parseFloat(document.getElementById('principal').value);
+            const rate30 = parseFloat(document.getElementById('rate30').value);
+            const rate50 = parseFloat(document.getElementById('rate50').value);
+            const marketReturn = parseFloat(document.getElementById('marketReturn').value);
+            
+            const monthlyMarketReturn = marketReturn / 100 / 12;
+            
+            // Calculate monthly payments
+            const payment30 = calculateMonthlyPayment(principal, rate30, 30);
+            const payment50 = calculateMonthlyPayment(principal, rate50, 50);
+            
+            // Calculate total interest
+            const interest30 = calculateTotalInterest(payment30, 30, principal);
+            const interest50 = calculateTotalInterest(payment50, 50, principal);
+            
+            // Calculate investment portfolios
+            // 30-year scenario: invest difference for first 30 years, then invest full payment for years 31-50
+            const monthlyDifference = payment30 - payment50;
+            
+            // 50-year mortgage holder invests the difference from month 1
+            const portfolio50_at_30years = calculateInvestmentGrowth(monthlyDifference, 30 * 12, monthlyMarketReturn);
+            // Then that grows for another 20 years with no new contributions
+            const portfolio50_growth = portfolio50_at_30years * Math.pow(1 + monthlyMarketReturn, 20 * 12);
+            // Plus they continue investing the difference for the last 20 years
+            const portfolio50_additional = calculateInvestmentGrowth(monthlyDifference, 20 * 12, monthlyMarketReturn);
+            const portfolio50 = portfolio50_growth + portfolio50_additional;
+            
+            // 30-year mortgage holder invests nothing for 30 years (paying higher mortgage)
+            // Then invests the full 30-year payment amount for years 31-50
+            const portfolio30 = calculateInvestmentGrowth(payment30, 20 * 12, monthlyMarketReturn);
+            
+            // Net worth = home equity + investment portfolio - remaining mortgage
+            // At year 50, both mortgages are paid off, so home equity = home value (we'll use principal as proxy)
+            const networth30 = principal + portfolio30;
+            const networth50 = principal + portfolio50;
+            
+            // Update display
+            document.getElementById('payment30').textContent = formatCurrency(payment30) + '/mo';
+            document.getElementById('payment50').textContent = formatCurrency(payment50) + '/mo';
+            document.getElementById('interest30').textContent = formatCurrency(interest30);
+            document.getElementById('interest50').textContent = formatCurrency(interest50);
+            document.getElementById('portfolio30').textContent = formatCurrency(portfolio30);
+            document.getElementById('portfolio50').textContent = formatCurrency(portfolio50);
+            document.getElementById('networth30').textContent = formatCurrency(networth30);
+            document.getElementById('networth50').textContent = formatCurrency(networth50);
+            
+            // Determine winner
+            const winnerElement = document.getElementById('winner');
+            const differenceElement = document.getElementById('difference');
+            
+            if (networth50 > networth30) {
+                winnerElement.textContent = '50-Year Mortgage';
+                winnerElement.className = 'winner fifty';
+                differenceElement.textContent = `You end up ${formatCurrency(networth50 - networth30)} richer with the 50-year mortgage`;
+            } else if (networth30 > networth50) {
+                winnerElement.textContent = '30-Year Mortgage';
+                winnerElement.className = 'winner thirty';
+                differenceElement.textContent = `You end up ${formatCurrency(networth30 - networth50)} richer with the 30-year mortgage`;
+            } else {
+                winnerElement.textContent = "It's a Tie!";
+                winnerElement.className = 'winner';
+                differenceElement.textContent = 'Both strategies result in the same net worth';
+            }
+            
+            // Strategy breakdown
+            document.getElementById('strategy30').innerHTML = `
+                <p><strong>Years 1-30:</strong> Pay ${formatCurrency(payment30)}/mo on mortgage, invest $0</p>
+                <p><strong>Years 31-50:</strong> Mortgage paid off, invest ${formatCurrency(payment30)}/mo</p>
+                <p><strong>Total invested:</strong> ${formatCurrency(payment30 * 20 * 12)}</p>
+            `;
+            
+            document.getElementById('strategy50').innerHTML = `
+                <p><strong>Years 1-50:</strong> Pay ${formatCurrency(payment50)}/mo on mortgage, invest ${formatCurrency(monthlyDifference)}/mo</p>
+                <p><strong>Total invested:</strong> ${formatCurrency(monthlyDifference * 50 * 12)}</p>
+            `;
+            
+            // Key insight
+            const interestDiff = interest50 - interest30;
+            const portfolioDiff = portfolio50 - portfolio30;
+            
+            document.getElementById('insight').innerHTML = `
+                <p>Yes, the 50-year mortgage costs <strong>${formatCurrency(interestDiff)} more in interest</strong>.</p>
+                <p>However, by investing the payment difference from day one, the 50-year mortgage holder builds a portfolio worth 
+                <strong>${formatCurrency(portfolioDiff)} ${portfolioDiff > 0 ? 'more' : 'less'}</strong> than the 30-year holder.</p>
+                <p>The key factor is <strong>time in the market</strong>. The 50-year mortgage holder invests for 50 years, 
+                while the 30-year holder only invests for 20 years (after paying off the mortgage).</p>
+                <p><em>Note: This assumes disciplined investing of the payment difference and doesn't account for taxes, 
+                inflation, or market volatility.</em></p>
+            `;
+            
+            document.getElementById('resultsSection').classList.remove('hidden');
+        }
+        
+        // Calculate on load with default values
+        calculate();
+    </script>
+</body>
+</html>
