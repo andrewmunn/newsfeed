@@ -230,7 +230,7 @@
             
             <div class="input-group">
                 <label for="marketReturn">Stock Market Return (%)</label>
-                <div class="input-help">Expected annual return (nominal)</div>
+                <div class="input-help">Expected annual return (historically ~10% nominal)</div>
                 <input type="number" id="marketReturn" value="10" min="0" max="30" step="0.5">
             </div>
         </div>
@@ -422,16 +422,40 @@
             // Key insight
             const interestDiff = interest50 - interest30;
             const portfolioDiff = portfolio50 - portfolio30;
+            const networthDiff = networth50 - networth30;
             
-            document.getElementById('insight').innerHTML = `
-                <p>Yes, the 50-year mortgage costs <strong>${formatCurrency(interestDiff)} more in interest</strong>.</p>
-                <p>However, by investing the payment difference from day one, the 50-year mortgage holder builds a portfolio worth 
-                <strong>${formatCurrency(portfolioDiff)} ${portfolioDiff > 0 ? 'more' : 'less'}</strong> than the 30-year holder.</p>
-                <p>The key factor is <strong>time in the market</strong>. The 50-year mortgage holder invests for 50 years, 
-                while the 30-year holder only invests for 20 years (after paying off the mortgage).</p>
+            let insightHTML = '';
+            
+            if (networthDiff > 0) {
+                // 50-year mortgage wins
+                insightHTML = `
+                    <p>The 50-year mortgage costs <strong>${formatCurrency(interestDiff)} more in interest</strong>.</p>
+                    <p>However, by investing the payment difference from day one, the 50-year mortgage holder builds a portfolio worth 
+                    <strong>${formatCurrency(portfolioDiff)} more</strong> than the 30-year holder.</p>
+                    <p>The key factor is <strong>time in the market</strong>. The 50-year mortgage holder invests for 50 years, 
+                    while the 30-year holder only invests for 20 years (after paying off the mortgage). The extra compound growth 
+                    more than offsets the additional interest paid.</p>
+                `;
+            } else if (networthDiff < 0) {
+                // 30-year mortgage wins
+                insightHTML = `
+                    <p>The 50-year mortgage costs <strong>${formatCurrency(interestDiff)} more in interest</strong>.</p>
+                    <p>The 50-year mortgage holder builds a portfolio worth 
+                    <strong>${formatCurrency(Math.abs(portfolioDiff))} ${portfolioDiff > 0 ? 'more' : 'less'}</strong> than the 30-year holder.</p>
+                    <p>In this scenario, the <strong>lower interest rate on the 30-year mortgage</strong> combined with the larger monthly 
+                    investment amount after payoff outweighs the benefit of earlier investing. The 30-year holder invests 
+                    ${formatCurrency(payment30)}/mo for 20 years vs ${formatCurrency(monthlyDifference)}/mo for 50 years.</p>
+                `;
+            } else {
+                insightHTML = `<p>Both strategies result in identical net worth - a rare breakeven point!</p>`;
+            }
+            
+            insightHTML += `
                 <p><em>Note: This assumes disciplined investing of the payment difference and doesn't account for taxes, 
                 inflation, or market volatility.</em></p>
             `;
+            
+            document.getElementById('insight').innerHTML = insightHTML;
             
             document.getElementById('resultsSection').classList.remove('hidden');
         }
